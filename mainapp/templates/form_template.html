@@ -1,0 +1,52 @@
+
+{% if form_html.get_form_cat == "login_form" %}
+	{% block inline_css %}
+		<style type="text/css">
+			#form_html{
+				max-width: 450px;
+				margin:auto;
+			}
+			#form_html button{
+				width: 100%;
+			}
+		</style>
+	{% endblock inline_css %}
+{% endif %}
+
+{% if form_html.is_bound and form_html.get_form_cat == "documents_form" %}
+	{% include "form_file_template.html" %}
+{% else %}
+	<form id="form_html" method="post" enctype="multipart/form-data">
+		<div id="form-topic">{{form_html.page_title}}</div>
+		<hr>
+		<div style="margin:10px 0px">{{form_html.non_field_errors}}</div>
+		{% csrf_token %}
+		{% for field in form_html %}
+		{% if field.is_hidden %}
+			{{field}}
+		{% else %}
+		<div class="form-group">
+			{{field.label_tag}}
+			{{field.errors}}
+			{{field}}
+			{% if field.help_text %}
+	        	<small  class="form-text text-muted">{{ field.help_text|safe }}</small>
+	        {% endif %}
+		</div>
+		{% endif %}
+		{% endfor %}
+		<button type="button" class="btn btn-primary form_submit_btn" onclick="submit_btn_clicked(this);">Continue</button>
+		<hr>
+	</form>
+{% endif %}
+{% block inline_js %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".datepicker").datepicker({
+			  dateFormat: "yy-mm-dd",
+			  changeMonth: true,
+        		changeYear: true,
+			});
+	});
+</script>	
+{% endblock inline_js %}

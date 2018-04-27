@@ -1,0 +1,7 @@
+db_config.py
+__pycache__
+*.pyc
+db.sqlite3
+logs
+emails
+media

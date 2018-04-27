@@ -1,0 +1,21 @@
+html,body{
+	height:100%;
+}
+
+ul li{
+	list-style-type: none;
+	display: inline-block;
+}
+
+.main_wrapper{
+	max-width: 1000px;
+}
+
+.center_page{
+	position: absolute;
+		top: 0;
+		bottom:0;
+		right: 0;
+		left:0;
+		margin:auto;
+}

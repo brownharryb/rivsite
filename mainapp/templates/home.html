@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block inline_css %}
+<style type="text/css">
+	#apply_form_container{
+		/*border: 1px solid #000;*/
+		margin-bottom: 100px;
+		height: 100%;
+	}
+	#form-topic{
+		text-align: center;
+		font-size: 20px;
+		color:#bbb;
+		padding-bottom: 15px;
+	}
+
+	#apply_form_container form{
+		padding:10px 20px;
+		
+	}
+
+	#apply_form_container form label{
+		font-size:13px;
+		font-weight: bold;
+	}
+
+	hr{
+		border: none;
+		margin-top: -1px;
+		height: 1px;
+		background-color: #c0c8c9;
+		background-image: -webkit-linear-gradient(0deg, #fff, #c0c8c9, #fff);
+	}
+	.form_submit_btn{
+		width: 250px;
+		margin-bottom: 30px;
+	}
+
+	#new_applicant_container{
+		text-align: center;
+	}
+	#new_applicant_container button{
+		padding:20px;
+		border-radius: 30px;
+		border: 1px solid #bbb;
+		margin:30px 0px;
+		font-weight: bold;
+		cursor: pointer;
+	}
+	
+</style>
+{% endblock inline_css %}
+
+
+{% block body_content %}
+	{% include "header_banner.html" %}
+	{% if not request.user.is_authenticated %}
+		<div id="new_applicant_container" class="main_wrapper">
+			<button id="new_applicant_button">Click Here To Register</button>
+		</div>
+	{% endif %}
+	<hr>
+	<div id="apply_form_container" class="main_wrapper">
+		{% include "form_template.html" with form_html=form_html %}
+	</div>
+{% endblock body_content %}
+{% block inline_js %}
+<script type="text/javascript">
+$(document).ready(function(){
+	show_application_form();
+	new_applicant_click();
+});
+
+	
+
+	function show_application_form(){
+		$("#reg_now_btn").click(function(e){
+			scroll_to_form();
+		});
+
+		if(document.location.pathname == "{% url 'apply_page' %}"){
+			scroll_to_form();
+		}else{
+			scroll_to_top();
+		}
+	}
+
+	function scroll_to_form(){
+		var offset_stop = $("#new_applicant_container");
+		if(offset_stop.length < 1){
+			offset_stop = $("#apply_form_container");
+		}	
+		 $('html, body').animate({
+	        scrollTop: offset_stop.offset().top
+	    }, 1000);
+	}
+
+	function scroll_to_top(){
+		$('html, body').animate({
+	        scrollTop: $("html, body").offset().top
+	    }, 1000);
+	}
+
+	function submit_btn_clicked(btn){
+		$(btn).prop("disabled",true);
+		$(btn).text("Processing....");
+		var $form = $(btn).parent();
+		if(file_exists_in_form($form)){
+			submit_forms_with_files($form);
+		}else{
+			submit_forms($form);
+		}
+	}
+
+	function submit_forms($form){
+		var form_data = $($form).serializeArray();
+		$.ajax({
+			url:"{% url 'apply_page' %}",
+			method:"post",
+			data:form_data,
+			success:function(response){
+				var old_page = $("#apply_form_container").find("form");
+				$(old_page).addClass("animated fadeOut");
+				var r = $(response).addClass("animated fadeIn");
+				$("#apply_form_container").html(r);	
+				remove_start_new_button();			
+				// $(response).addClass("animated fadeOutLeft");				
+			},
+			error:function(response){
+				console.log("error");
+				console.log(response);
+			}
+		});
+	}
+
+	function submit_forms_with_files($form){
+		var data = new FormData($($form)[0]);		
+		$.ajax({
+			url:"{% url 'apply_page' %}",
+			method:"post",
+			data:data,
+			processData: false, 
+       		contentType: false,
+			success:function(response){
+				var old_page = $("#apply_form_container").find("form");
+				$(old_page).addClass("animated fadeOut");
+				var r = $(response).addClass("animated fadeIn");
+				$("#apply_form_container").html(r);	
+				remove_start_new_button();			
+				// $(response).addClass("animated fadeOutLeft");				
+			},
+			error:function(response){
+				console.log("error");
+				console.log(response);
+			}
+		});
+
+	}
+
+	function file_exists_in_form($form){
+		var exists = false
+		$.each($($form)[0], function(i, file) {
+			if(file.files != null && file.files != undefined){
+				exists = true;
+				return false;
+			}			
+		});	
+		return exists;
+
+	}
+
+
+	function new_applicant_click(){
+		$("#new_applicant_button").click(function(e){
+			$("#apply_form_container").find("form").addClass("animated fadeOut").on('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd', function(e){
+				$(this).remove();
+			});
+			$(this).addClass("animated fadeOut").on('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd', function(e){
+				$(this).remove();
+				load_contact_form();
+			});
+
+			
+
+		});
+	}
+
+
+	function load_contact_form(){
+		$.ajax({
+			url:"{% url 'apply_new_page' %}",
+			success:function(response){
+				var r = $(response).addClass("animated fadeIn");
+				$("#apply_form_container").html(r);
+			}
+		});
+		scroll_to_form();
+	}
+
+	function remove_start_new_button(){
+		$("#new_applicant_container").addClass("animated fadeOut").on('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd', function(e){
+				$(this).animate({
+					height:0
+				},500,function(){
+					$(this).remove()
+				})				
+			});
+		scroll_to_form();
+	}
+
+</script>
+{% endblock inline_js %}

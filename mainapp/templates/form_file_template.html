@@ -1,0 +1,32 @@
+<form id="form_html" method="post" enctype="multipart/form-data">
+	<div id="form-topic">{{form_html.page_title}}</div>
+	<hr>
+	<div style="margin:20px 0px">{{form_html.non_field_errors}}</div>
+	{% csrf_token %}
+	{% for field in form_html %}
+	{% if field.is_hidden %}
+		{{field}}
+	{% else %}
+	<div class="form-group">
+		{{field.label_tag}}
+		{{field.errors}}
+		{{field}}
+		{% if field.data.url %}
+			<a style="font-size:12px;color:green;font-weight:bold;" href="{{field.data.url}}">Uploaded File</a>
+		{% endif %}
+		{% if field.help_text %}
+        	<small  class="form-text text-muted">{{ field.help_text|safe }}</small>
+        {% endif %}
+	</div>
+	{% endif %}
+	{% endfor %}
+	<button type="button" class="btn btn-primary form_submit_btn" onclick="submit_btn_clicked(this);">Continue</button>
+	<hr>
+</form>
+{% block inline_js %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		
+	});
+</script>	
+{% endblock inline_js %}

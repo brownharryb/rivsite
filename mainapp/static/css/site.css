@@ -1,0 +1,33 @@
+html,body{
+	height:100%;
+}
+
+ul li{
+	list-style-type: none;
+	display: inline-block;
+}
+
+.main_wrapper{
+	max-width: 1000px;
+	margin:auto;
+}
+
+.center_page{
+	position: absolute;
+		top: 0;
+		bottom:0;
+		right: 0;
+		left:0;
+		margin:auto;
+}
+
+.errorlist{
+	padding:0px;
+	margin:0px;
+}
+
+.errorlist li{
+	color:red;
+	font-size:12px;
+	font-weight: bold;
+}
