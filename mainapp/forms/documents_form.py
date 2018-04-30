@@ -9,11 +9,16 @@ from mainapp.forms.validators import ValidationForm
 class DocumentForm(ValidationForm, forms.Form):
 	form_cat = forms.CharField(widget=forms.HiddenInput(attrs={'value':'documents_form'}))
 	photo = RestrictedFileField(content_types=['image/jpeg','image/png'],
-		label='Passport Photograph',
+		label='*Passport Photograph',
 		widget=forms.FileInput(attrs={'class':'form-control'}),required=False)
 	local_govt_id = RestrictedFileField(content_types=['image/jpeg','image/png'],
-		label='Local Govt. Identification',
+		label='*Local Govt. Identification',
 		widget=forms.FileInput(attrs={'class':'form-control'}), required=False)
+	resume = RestrictedFileField(content_types=['text/plain', 'application/pdf',
+					'application/msword',
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+					label='*CV',help_text='doc or pdf',
+					widget=forms.FileInput(attrs={'class':'form-control'}), required=False)
 
 	def page_title(self):
 		return "Relevant Documents"

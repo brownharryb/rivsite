@@ -39,7 +39,7 @@ class ValidationForm():
 		return validate_phone(self.cleaned_data.get('phone_number2'))
 
 	def clean_permanent_residence(self):
-		return clean_alphanum(self.cleaned_data.get('permanent_residence'), safe="'()")
+		return clean_alphanum(self.cleaned_data.get('permanent_residence'), safe="'()\n\r")
 
 
 

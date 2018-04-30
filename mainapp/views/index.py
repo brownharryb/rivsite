@@ -211,6 +211,7 @@ class ApplicationFormView(View):
 				"middle_name":candidate.middle_name,
 				"last_name":candidate.last_name,
 				"gender":candidate.gender,
+				"local_govt_area":candidate.local_govt_area,
 				"date_of_birth":candidate.date_of_birth}
 		return self.personal_form_class(data)
 
@@ -233,7 +234,9 @@ class ApplicationFormView(View):
 			return self.document_form_class()
 		candidate = candidate[0]
 		data = {'local_govt_id':candidate.local_govt_id or None,
-				'photo':candidate.photo or None}
+				'photo':candidate.photo or None,
+				'resume':candidate.resume or None
+				}
 		form = self.document_form_class(files=data)
 		return form
 
@@ -251,6 +254,7 @@ class ApplicationFormView(View):
 		candidate.middle_name = request_post_data.get('middle_name')
 		candidate.last_name=request_post_data.get('last_name')
 		candidate.date_of_birth=request_post_data.get('date_of_birth')
+		candidate.local_govt_area=request_post_data.get('local_govt_area')
 		candidate.gender=request_post_data.get('gender')
 		candidate.save()
 
@@ -260,10 +264,12 @@ class ApplicationFormView(View):
 			candidate.photo = request.FILES.get('photo')
 		if request.FILES.get('local_govt_id') not in ['',None]:
 			candidate.local_govt_id = request.FILES.get('local_govt_id')
+		if request.FILES.get('resume') not in ['',None]:
+			candidate.resume = request.FILES.get('resume')
 		candidate.save()
 		candidate.refresh_from_db()
 		err = []
-		for field in ['local_govt_id','photo']:
+		for field in ['local_govt_id','photo','resume']:
 			if getattr(candidate,field) in ['',None]:
 				err.append(field)
 		return err
