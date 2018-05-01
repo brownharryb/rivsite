@@ -9,6 +9,7 @@ ul li{
 
 .main_wrapper{
 	max-width: 1000px;
+	margin:auto;
 }
 
 .center_page{
@@ -18,4 +19,15 @@ ul li{
 		right: 0;
 		left:0;
 		margin:auto;
+}
+
+.errorlist{
+	padding:0px;
+	margin:0px;
+}
+
+.errorlist li{
+	color:red;
+	font-size:12px;
+	font-weight: bold;
 }
